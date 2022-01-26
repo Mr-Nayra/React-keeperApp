@@ -1,9 +1,16 @@
 import React from "react";
+import AddIcon from "@material-ui/icons/Add";
+import Fab from "@material-ui/core/Fab";
+import Zoom from "@material-ui/core/Zoom";
 
 function CreateArea(props) {
+  const [check, setCheck] = React.useState(0);
   const [enteredTitle, setEnteredTitle] = React.useState("");
   const [enteredContent, setEnteredContent] = React.useState("");
 
+  const changeCheck = () => {
+    setCheck(check ^ 1);
+  };
   const titleChangeHandler = (event) => {
     setEnteredTitle(event.target.value);
   };
@@ -19,25 +26,54 @@ function CreateArea(props) {
       title: enteredTitle,
       content: enteredContent,
     };
-    props.AddNote(expenseData);
     setEnteredContent("");
     setEnteredTitle("");
+    props.AddNote(expenseData);
   };
 
-  return (
-    <div>
-      <form onSubmit={submitHandler}>
-        <input name="title" placeholder="Title" onChange={titleChangeHandler} />
+  let inputData;
+  if (check == 0) {
+    inputData = (
+      <form className="create-note">
+      <textarea
+        name="content"
+        placeholder="Take a note..."
+        rows="1"
+        onClick={changeCheck}
+        onChange={contentChangeHandler}
+        value={enteredContent}
+      />
+  </form>
+    );
+  } else {
+    inputData = (
+      <form onSubmit={submitHandler} className="create-note">
+        <input
+          name="title"
+          placeholder="Title"
+          onChange={titleChangeHandler}
+          value={enteredTitle}
+
+        />
         <textarea
           name="content"
           placeholder="Take a note..."
           rows="3"
           onChange={contentChangeHandler}
+          value={enteredContent}
         />
-        <button type="submit">Add</button>
+        <Zoom in={true}>
+          <Fab type="submit">
+            <AddIcon />
+          </Fab>
+        </Zoom>
       </form>
-    </div>
-  );
+    );
+  }
+
+  return <div className="new-expense">{inputData}</div>;
+
+  return <div>{inputData}</div>;
 }
 
 export default CreateArea;
